@@ -222,7 +222,7 @@ fn previews_survive_save_and_open() {
     let path = folder.join("Film.fcproj").to_string_lossy().to_string();
     s.execute("file.save", json!({"path": path})).unwrap();
     // the unsaved project's previews moved next to the project
-    assert_eq!(s.previews.dir().unwrap(), folder.join("FilmCraft Previews").join("Film"));
+    assert_eq!(s.previews.dir().unwrap(), folder.join("TSMovie Previews").join("Film"));
     assert_eq!(states(&s), vec!["green", "none"]);
     let mut t = Session::default();
     t.execute("file.open", json!({"path": path})).unwrap();
@@ -238,14 +238,14 @@ fn saving_without_previews_creates_no_previews_folder() {
     std::fs::create_dir_all(&folder).unwrap();
     let path = folder.join("Film.fcproj").to_string_lossy().to_string();
     s.execute("file.save", json!({"path": path})).unwrap();
-    assert_eq!(s.previews.dir().unwrap(), folder.join("FilmCraft Previews").join("Film"));
-    assert!(!folder.join("FilmCraft Previews").exists());
+    assert_eq!(s.previews.dir().unwrap(), folder.join("TSMovie Previews").join("Film"));
+    assert!(!folder.join("TSMovie Previews").exists());
     // the first render creates it
     let (mut r, a) = session("save-empty-render");
     r.execute("file.save", json!({"path": path})).unwrap();
-    assert!(!folder.join("FilmCraft Previews").exists());
+    assert!(!folder.join("TSMovie Previews").exists());
     render_tint(&mut r, a);
-    assert!(folder.join("FilmCraft Previews").join("Film").is_dir());
+    assert!(folder.join("TSMovie Previews").join("Film").is_dir());
     assert_eq!(states(&r), vec!["green", "none"]);
     let _ = std::fs::remove_dir_all(&folder);
 }

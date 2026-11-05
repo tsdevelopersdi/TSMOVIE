@@ -1,11 +1,15 @@
 [package]
 name = "filmcraft"
-description = "FilmCraft desktop app"
+description = "TSMovie desktop app"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-default-run = "filmcraft"
+default-run = "tsmovie"
 build = "build.rs"
+
+[[bin]]
+name = "tsmovie"
+path = "src/main.rs"
 
 [lints]
 workspace = true
@@ -62,7 +66,7 @@ winit = { version = "0.30", default-features = false, features = ["x11"] }
 # portal file dialogs (rfd) and accesskit already use.
 zbus = "5.19"
 
-# Icon + VERSIONINFO for filmcraft.exe (build.rs); only needed when building on Windows.
+# Icon + VERSIONINFO for tsmovie.exe (build.rs); only needed when building on Windows.
 [target.'cfg(windows)'.build-dependencies]
 winresource = "0.1"
 

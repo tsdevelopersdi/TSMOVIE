@@ -1,4 +1,4 @@
-# FilmCraft export
+# TSMovie export
 
 The export pipeline renders sequence frames, encodes them and writes the selected container.
 See [architecture](../../docs/architecture.md) for formats, settings, presets and queue behavior.

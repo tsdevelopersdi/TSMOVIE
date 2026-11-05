@@ -1,4 +1,4 @@
-//! The FilmCraft egui frontend.
+//! The TSMovie egui frontend.
 //!
 //! Thin by design: all project changes go through `filmcraft_engine::Session::execute`; this crate
 //! owns only presentation state ([`state::UiState`]), GPU textures, the playback clock and the
@@ -6,12 +6,18 @@
 
 #![cfg_attr(not(test), deny(clippy::unwrap_used, clippy::expect_used, clippy::panic, clippy::unimplemented, clippy::todo, clippy::unreachable))]
 
-/// FilmCraft as craft-update knows it, with its 128 px icon and accent colour: the update
+/// TSMovie as craft-update knows it, with its 128 px icon and accent colour: the update
 /// prompt shows both, and an AppImage's menu entry gets the icon.
 #[cfg(not(target_arch = "wasm32"))]
 pub const UPDATE_APP: craft_update::app::App = craft_update::app::App {
+    id: "tsmovie",
+    name: "TSMovie",
+    developer: "Solusi Daya Indonesia",
+    repo: "tsdevelopersdi/TSMOVIE",
+    former_ids: &[],
+    former_names: &[],
     icon_png: Some(include_bytes!("../../../assets/app-icon/hicolor/128x128/apps/ai.storyteller.filmcraft.png")),
-    accent: Some([0x8b, 0x5c, 0xf6]),
+    accent: Some([0x2f, 0x7d, 0xe1]),
     ..craft_update::suite::FILMCRAFT
 };
 
@@ -39,7 +45,6 @@ macro_rules! tlf {
 }
 
 pub mod automation;
-pub mod brand;
 pub mod calc;
 pub mod capture;
 mod cjk;
@@ -405,4 +410,15 @@ pub struct GpuState {
     pub broken: std::sync::Arc<std::sync::atomic::AtomicBool>,
     /// Largest texture side the device accepts.
     pub max_texture: u32,
+}
+
+#[cfg(all(test, not(target_arch = "wasm32")))]
+mod ts_update_source {
+    #[test]
+    fn updates_come_from_the_ts_repository() {
+        let app = &super::UPDATE_APP;
+        assert_eq!(app.repo, "tsdevelopersdi/TSMOVIE");
+        assert_eq!(app.id, "tsmovie");
+        assert!(app.former_ids.is_empty() && app.former_names.is_empty());
+    }
 }

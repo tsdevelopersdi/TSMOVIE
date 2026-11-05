@@ -1,6 +1,6 @@
 # filmcraft-interchange
 
-Timeline interchange for FilmCraft: CMX 3600 EDL, Final Cut Pro 7 XML (xmeml), FCPXML,
+Timeline interchange for TSMovie: CMX 3600 EDL, Final Cut Pro 7 XML (xmeml), FCPXML,
 OpenTimelineIO, AAF and OMF import and export, plus Avid ALE. Layer L2: no file I/O; media
 references are strings and audio essence is supplied by the caller (the engine).
 
@@ -46,8 +46,8 @@ media start timecodes beyond 360 000 000 000 frames are reset the same way. Cove
 
 `comp` holds a format-neutral mob-style model (compositions of slots whose sequences of fillers,
 source clips and overlapping transitions reference media through master and file source mobs).
-`aaf` and `omf` serialise it; both import back into the same model and from there into FilmCraft
-sequences and media. Mapping details (what each FilmCraft feature becomes) are in the `aaf` and
+`aaf` and `omf` serialise it; both import back into the same model and from there into TSMovie
+sequences and media. Mapping details (what each TSMovie feature becomes) are in the `aaf` and
 `omf` module docs. Times are kept in ticks in the model; compositions use the sequence frame rate
 for picture and the sample rate for sound slots, so audio edits are sample-exact.
 
@@ -74,7 +74,7 @@ For the formats Premiere Pro exports (FCP7 XML, OTIO, EDL, AAF, OMF) a nested se
 the way Premiere Pro 26.5.2 writes it, as seen in the files it exports for a sequence with a nest.
 Premiere Pro does not write FCPXML.
 
-| Format | Written as | On import into FilmCraft |
+| Format | Written as | On import into TSMovie |
 |---|---|---|
 | FCP7 XML | a clip item holding the nested `<sequence>` (by id after the first use) | a sequence the clips use |
 | FCPXML | a `ref-clip` to a `media` resource holding the sequence | a sequence the clips use |
@@ -92,13 +92,13 @@ compositions too (the top-level ones are those no other composition uses).
 
 ## Graphics and adjustment layers
 
-No format here has an equivalent of a FilmCraft graphic (title) clip or an adjustment layer, and
+No format here has an equivalent of a TSMovie graphic (title) clip or an adjustment layer, and
 none of the exports brings one back. Each such clip is named in the export `Report` as a warning
 (`graphic clip "Title" at frame 48 …`, one line per clip), with what was written instead:
 
-| Format | Written as | On import into FilmCraft |
+| Format | Written as | On import into TSMovie |
 |---|---|---|
-| FCP7 XML | a clip item without media (its layers as FilmCraft filter ids) | not read back; the import report names the skipped clip item |
+| FCP7 XML | a clip item without media (its layers as TSMovie filter ids) | not read back; the import report names the skipped clip item |
 | FCPXML | a gap on V1; left out on other tracks (a gap exists only in the primary storyline) | not read back |
 | OTIO | a clip with a `MissingReference` (effects in the `filmcraft` metadata) | offline media |
 | EDL | an ordinary event with the reel the reel mode gives | an ordinary clip |

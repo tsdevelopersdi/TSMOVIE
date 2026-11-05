@@ -1,8 +1,8 @@
 asset:        ai.storyteller.filmcraft.png
-title:        FilmCraft app icon, Linux hicolor theme 24 px
-author:       Brandon Thomas (FilmCraft owner), for the FilmCraft project
-source:       original work (drawn by the owner in ArtCraft, then vectorised)
+title:        TSMovie app icon, Linux hicolor theme 24 px
+author:       Solusi Daya Indonesia (Tech Services SDI), for TSMovie
+source:       original work (clapperboard and play button drawn as SVG for TSMovie)
 license:      MIT OR Apache-2.0
 license-file: assets/app-icon/LICENSE.txt
-added:        2026-10-02 by Claude (agent) for Brandon Thomas
+added:        2026-11-05 by Claude (agent) for Solusi Daya Indonesia
 notes:        Rendered from filmcraft.svg with resvg by packaging/icons.sh.

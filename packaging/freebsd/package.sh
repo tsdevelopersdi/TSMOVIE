@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build and package FilmCraft for FreeBSD:
+# Build and package TSMovie for FreeBSD:
 #
 #   $DIST/filmcraft-<version>-freebsd-<arch>.tar.gz   (arch: x86_64 or aarch64) a /usr/local-style tree:
 #       filmcraft-<version>-freebsd-<arch>/{bin, share/applications, share/icons, share/mime,
@@ -51,7 +51,7 @@ if [[ "$DRY_RUN" = 0 ]] && [[ "$(uname -s)" != FreeBSD ]]; then
 fi
 BASENAME="filmcraft-$VERSION-freebsd-$ARCH"
 
-echo "==> FilmCraft $VERSION for FreeBSD $ARCH"
+echo "==> TSMovie $VERSION for FreeBSD $ARCH"
 
 # The release VM has 12 GB; full parallelism on the biggest crates runs it out of memory.
 export CARGO_BUILD_JOBS="${CARGO_BUILD_JOBS:-4}"

@@ -1,0 +1,60 @@
+# Weekly: merge upstream filmcraft (storytold/filmcraft main) into a branch and open a PR into
+# main, so upstream fixes reach TSMovie after review. Rebranding conflicts are resolved by hand
+# in that PR; the test updates_come_from_the_ts_repository keeps the update source ours.
+# Needs: Settings > Actions > General > "Allow GitHub Actions to create and approve pull requests".
+name: TS Upstream sync
+
+on:
+  schedule:
+    - cron: "0 1 * * 1"   # Monday 08:00 WIB
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    if: github.repository == 'tsdevelopersdi/TSMOVIE'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge upstream
+        id: merge
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add upstream https://github.com/storytold/filmcraft.git
+          git fetch --no-tags upstream main
+          if git merge-base --is-ancestor upstream/main HEAD; then
+            echo "Already up to date with upstream."; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          branch="upstream-sync/$(date -u +%Y-%m-%d)"
+          git switch -c "$branch"
+          if git merge --no-edit --no-ff upstream/main -m "Merge upstream filmcraft $(git rev-parse --short upstream/main)"; then
+            echo "conflict=false" >> "$GITHUB_OUTPUT"
+          else
+            git merge --abort
+            git switch -C "$branch" upstream/main
+            echo "conflict=true" >> "$GITHUB_OUTPUT"
+          fi
+          git push -f origin "$branch"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Open PR
+        if: steps.merge.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          branch='${{ steps.merge.outputs.branch }}'
+          if [ '${{ steps.merge.outputs.conflict }}' = 'true' ]; then
+            note="The merge conflicts with TSMovie's rebranding, so this branch is plain upstream main. Merge it into main locally (git merge origin/$branch), resolve the conflicts keeping the TSMovie names and the tsdevelopersdi/TSMOVIE update repository, and push."
+          else
+            note="Merged cleanly. Check that the TSMovie branding and update repository are intact, then bump the version and tag a release."
+          fi
+          gh pr list --head "$branch" --json number --jq '.[0].number' | grep -q . || \
+            gh pr create --base main --head "$branch" --title "Upstream filmcraft sync $(date -u +%Y-%m-%d)" --body "$note"

@@ -1978,6 +1978,7 @@ dependencies = [
  "filmcraft-time",
  "serde_json",
  "tokio",
+ "winresource",
 ]
 
 [[package]]

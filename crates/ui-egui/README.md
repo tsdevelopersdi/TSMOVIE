@@ -1,4 +1,4 @@
-# FilmCraft interface
+# TSMovie interface
 
 The egui frontend draws panels and dialogs, and dispatches project changes through the engine.
 Interactive controls keep stable automation ids regardless of the interface language.
@@ -156,7 +156,7 @@ clipboard shortcuts and local text Undo/Redo.
 
 The **+** square below the presets opens a separate color editor. macOS uses the native
 Colors panel; other hosts and native-picker failures reuse the established egui picker.
-FilmCraft retains exact six-digit sRGB hex entry and explicit confirmation. Add color
+TSMovie retains exact six-digit sRGB hex entry and explicit confirmation. Add color
 saves a reusable swatch to this project's palette through `colors.addCustom` (a separate
 undoable operation) and selects it in the marker draft. Canceling the marker edit afterward
 does not remove a deliberately saved palette color. The project stores at most 64 custom
@@ -178,10 +178,10 @@ make the center too white. Lumetri's grading wheels remain separate: they edit g
 offsets. Existing effect/graphics pickers retain their alpha/float/color-space semantics.
 
 The same author and hex values are available to Source marker commands. Existing markers
-have an empty author; FilmCraft never infers authorship from the operating-system account.
+have an empty author; TSMovie never infers authorship from the operating-system account.
 Projects (schema 17) retain marker properties, Web Link URLs and the project palette. Marker CSV reports
-and FilmCraft OTIO metadata retain individual marker authors, URLs and colors. OTIO also
-retains custom clip label colors and the palette in FilmCraft metadata. Other interchange exports warn when they cannot preserve those marker properties.
+and TSMovie OTIO metadata retain individual marker authors, URLs and colors. OTIO also
+retains custom clip label colors and the palette in TSMovie metadata. Other interchange exports warn when they cannot preserve those marker properties.
 Importing an OTIO document merges its saved swatches after the current project's swatches, omitting duplicates and respecting the 64-swatch limit.
 This does not add AVB marker import or Avid track-bound markers.
 
@@ -212,7 +212,7 @@ Manage Colors is available from the Markers panel and clip Label menus. The sepa
 palette manager adds, names, edits, and removes swatches using the shared color picker. Editing
 or removing a saved swatch preserves already assigned hex values; used colors remain available
 for reuse. `colors.addCustom`, `colors.updateCustom`, and `colors.removeCustom` are undoable.
-Names persist in the project and FilmCraft OTIO metadata; existing sixteen presets are unchanged.
+Names persist in the project and TSMovie OTIO metadata; existing sixteen presets are unchanged.
 
 ### Editable clip duration
 

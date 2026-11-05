@@ -1,7 +1,7 @@
 {
-  "id": "filmcraft",
-  "name": "FilmCraft",
-  "upgradeCode": "31E6FB14-9DBC-41DD-B24B-26B71FB31B62",
+  "id": "tsmovie",
+  "name": "TSMovie",
+  "upgradeCode": "AA73B801-50CA-433E-B160-A9CC26C3CCD9",
   "sources": [
     "filmcraft.wxs"
   ],
@@ -12,13 +12,13 @@
   ],
   "payloads": [
     "NOTICE",
-    "filmcraft-cli.exe",
-    "filmcraft.exe"
+    "tsmovie-cli.exe",
+    "tsmovie.exe"
   ],
   "registry": [
     [
       "-1",
-      "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\filmcraft.exe",
+      "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\tsmovie.exe",
       "",
       "[#FilmcraftExe]"
     ]

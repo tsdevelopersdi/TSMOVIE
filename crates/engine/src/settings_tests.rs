@@ -464,7 +464,7 @@ fn media_cache_location_policy_and_clean() {
     assert_eq!(cache, dir.join("data").join("Media Cache"));
     // unsaved projects keep their previews in the media cache
     assert!(s.previews.dir().unwrap().starts_with(cache.join("Previews")), "{:?}", s.previews.dir());
-    // a custom location moves them, into a folder of FilmCraft's own inside it
+    // a custom location moves them, into a folder of TSMovie's own inside it
     let location = dir.join("cache2");
     set(&mut s, "mediaCache.location", json!(location.to_string_lossy()));
     let custom = location.join(settings::CUSTOM_CACHE_FOLDER);
@@ -504,7 +504,7 @@ fn media_cache_location_policy_and_clean() {
 }
 
 /// #2772: a custom media cache location is a folder the user picked (the home folder, a footage
-/// folder), so the policy and "Delete…" work in a folder of FilmCraft's own inside it and leave
+/// folder), so the policy and "Delete…" work in a folder of TSMovie's own inside it and leave
 /// everything else alone; neither a symlink inside the cache nor one in place of it is followed.
 #[test]
 fn media_cache_cleaning_keeps_the_files_of_the_chosen_folder() {

@@ -1,28 +1,25 @@
-//! Community and project links (Help menu, About dialog, header Discord button, Home screen).
+//! Project links (Help menu, About dialog, Home screen).
 //!
-//! FilmCraft is part of the ArtCraft family: the community lives on the ArtCraft Discord, every
-//! app has a page on the ArtCraft website and a public GitHub repository.
+//! TSMovie is Tech Services SDI's build of storytold/filmcraft: its installers and source live
+//! in the tsdevelopersdi/TSMOVIE repository.
 
-/// The app's short name, used in the website and repository URLs.
-pub const APP: &str = "filmcraft";
+/// The repository name, used in the repository URLs.
+pub const APP: &str = "TSMOVIE";
 
-/// The ArtCraft community Discord.
-pub const DISCORD: &str = "https://discord.gg/artcraft";
-/// The ArtCraft website.
-pub const WEBSITE: &str = "https://getartcraft.com";
-/// FilmCraft's page on the ArtCraft website.
-pub const APP_PAGE: &str = "https://getartcraft.com/apps/filmcraft";
-/// FilmCraft's source repository.
-pub const GITHUB: &str = "https://github.com/storytold/filmcraft";
-/// New issue on FilmCraft's repository.
-pub const ISSUES: &str = "https://github.com/storytold/filmcraft/issues";
+/// Solusi Daya Indonesia's website.
+pub const WEBSITE: &str = "https://solusidaya.id";
+/// TSMovie's releases (installers).
+pub const APP_PAGE: &str = "https://github.com/tsdevelopersdi/TSMOVIE/releases";
+/// TSMovie's source repository.
+pub const GITHUB: &str = "https://github.com/tsdevelopersdi/TSMOVIE";
+/// New issue on TSMovie's repository.
+pub const ISSUES: &str = "https://github.com/tsdevelopersdi/TSMOVIE/issues";
 
 /// (command id, label, url) for every link, in menu order.
-pub const ALL: [(&str, &str, &str); 5] = [
-    ("help.discord", "Join the ArtCraft Discord…", DISCORD),
-    ("help.website", "ArtCraft Website", WEBSITE),
-    ("help.appPage", "FilmCraft on getartcraft.com", APP_PAGE),
-    ("help.github", "FilmCraft on GitHub", GITHUB),
+pub const ALL: [(&str, &str, &str); 4] = [
+    ("help.website", "Solusi Daya Indonesia Website", WEBSITE),
+    ("help.appPage", "TSMovie Releases", APP_PAGE),
+    ("help.github", "TSMovie on GitHub", GITHUB),
     ("help.reportIssue", "Report an Issue…", ISSUES),
 ];
 
@@ -39,7 +36,7 @@ pub fn url_for(command: &str) -> Option<&'static str> {
 }
 
 /// What a Help menu item does, shown when the pointer rests on it: just the address a link opens
-/// in the web browser, or what an item that stays inside FilmCraft does.
+/// in the web browser, or what an item that stays inside TSMovie does.
 pub fn menu_hint(command: &str) -> Option<String> {
     let url = if command == "help.filmcraftHelp" { Some(crate::panels::keyboard::HELP_URL) } else { url_for(command) };
     if let Some(url) = url {
@@ -49,8 +46,8 @@ pub fn menu_hint(command: &str) -> Option<String> {
         match command {
             "help.revealLogFiles" => tl!("Saves this session's log and shows it in your file manager."),
             "help.systemCompatibilityReport" => tl!("Shows a report on this computer."),
-            "app.about" => tl!("Shows the version, community links and credits in a FilmCraft window."),
-            "app.checkForUpdates" => tl!("Looks for a newer FilmCraft release and offers to update."),
+            "app.about" => tl!("Shows the version, community links and credits in a TSMovie window."),
+            "app.checkForUpdates" => tl!("Looks for a newer TSMovie release and offers to update."),
             _ => return None,
         }
         .to_string(),
@@ -126,11 +123,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn urls_follow_the_artcraft_scheme() {
-        assert_eq!(APP_PAGE, format!("{WEBSITE}/apps/{APP}"));
-        assert_eq!(GITHUB, format!("https://github.com/storytold/{APP}"));
+    fn urls_point_at_the_ts_repository() {
+        assert_eq!(APP_PAGE, format!("{GITHUB}/releases"));
+        assert_eq!(GITHUB, format!("https://github.com/tsdevelopersdi/{APP}"));
         assert!(ALL.iter().all(|(id, _, u)| id.starts_with("help.") && u.starts_with("https://")));
-        assert_eq!(url_for("help.discord"), Some(DISCORD));
+        assert_eq!(url_for("help.discord"), None);
         assert_eq!(url_for("help.nope"), None);
     }
 
@@ -153,8 +150,8 @@ mod tests {
             assert_eq!(r["url"], url, "{id}");
             assert_eq!(opened.borrow().last().map(String::as_str), Some(url), "{id}");
         }
-        open(&mut app, &ctx, DISCORD);
-        assert_eq!(opened.borrow().last().map(String::as_str), Some(DISCORD));
+        open(&mut app, &ctx, WEBSITE);
+        assert_eq!(opened.borrow().last().map(String::as_str), Some(WEBSITE));
         assert_eq!(opened.borrow().len(), ALL.len() + 1);
 
         // A failing opener falls back to `ctx.open_url` instead of losing the click.

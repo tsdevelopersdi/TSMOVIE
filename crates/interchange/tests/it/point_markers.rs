@@ -1,4 +1,4 @@
-//! FCPXML point markers: a one-frame `<marker>` is a FilmCraft point (duration 0), not a range.
+//! FCPXML point markers: a one-frame `<marker>` is a TSMovie point (duration 0), not a range.
 
 use crate::support;
 

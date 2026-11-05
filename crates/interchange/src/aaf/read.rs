@@ -110,7 +110,7 @@ pub(crate) fn read(bytes: &[u8], report: &mut Report) -> Result<Document> {
     // Top-level compositions: those no other composition uses, among the ones tagged top-level
     // when any are. (Premiere Pro tags a nested sequence's composition top-level too; it is still
     // only a nested sequence.) Compositions that only use each other in a circle all count. The
-    // label older FilmCraft versions wrote for top-level counts as top-level too.
+    // label older TSMovie versions wrote for top-level counts as top-level too.
     let comps: Vec<&Obj> = content.objs(pid::MOBS).iter().filter(|m| m.class == cls::COMPOSITION_MOB).collect();
     let mut referenced = HashSet::new();
     for c in &comps {

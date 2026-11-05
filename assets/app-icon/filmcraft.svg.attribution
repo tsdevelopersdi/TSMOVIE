@@ -1,8 +1,8 @@
 asset:        filmcraft.svg
-title:        FilmCraft app icon, canonical vector (owl with ear tufts)
-author:       Brandon Thomas (FilmCraft owner), for the FilmCraft project
-source:       original work (drawn by the owner in ArtCraft, then vectorised)
+title:        TSMovie app icon, canonical vector (clapperboard with play button)
+author:       Solusi Daya Indonesia (Tech Services SDI), for TSMovie
+source:       original work (clapperboard and play button drawn as SVG for TSMovie)
 license:      MIT OR Apache-2.0
 license-file: assets/app-icon/LICENSE.txt
-added:        2026-10-02 by Claude (agent) for Brandon Thomas
-notes:        SVG traced at 2048 px from the owner's ArtCraft drawing. Three colours: ink #0b0b0c, paper #efe9dc, app colour #8b5cf6; 512 viewBox, rx=112. See assets/app-icon/README.md.
+added:        2026-11-05 by Claude (agent) for Solusi Daya Indonesia
+notes:        Drawn directly as SVG: blue tile #2f7de1–#0b3f91, clapperboard, amber play button, TSMOVIE wordmark (Arial Bold Italic, rendered to pixels); 512 viewBox, rx=112.

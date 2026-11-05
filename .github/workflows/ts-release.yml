@@ -1,0 +1,112 @@
+# TSMovie release (Tech Services SDI). Builds the Windows installer and portable zip and publishes
+# them as a GitHub Release of tsdevelopersdi/TSMOVIE, where TSMovie's update check looks
+# (crates/ui-egui/src/lib.rs UPDATE_APP). Asset names are what craft-update expects:
+#   tsmovie-<version>-windows-x64.msi, tsmovie-<version>-windows-x64-portable.zip, SHA256SUMS.txt
+#
+# Release: bump [workspace.package] version in Cargo.toml, commit, then push tag v<version>.
+name: TS Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to (re)build, e.g. v0.18.0"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ts-release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  # Same pin as the upstream release workflow (.github/workflows/release.yml).
+  CRAFT_FONTS_REF: b076417b5880bd4154bd22f00695b1d28c6bea83
+
+jobs:
+  windows:
+    if: github.repository == 'tsdevelopersdi/TSMOVIE'
+    runs-on: windows-latest
+    timeout-minutes: 120
+    steps:
+      - name: Resolve tag
+        id: tag
+        shell: pwsh
+        run: |
+          $tag = if ('${{ github.event_name }}' -eq 'workflow_dispatch') { '${{ inputs.tag }}' } else { '${{ github.ref_name }}' }
+          if ($tag -notmatch '^v\d+\.\d+\.\d+([-.][0-9A-Za-z.]+)?$') { throw "tag '$tag' is not v<semver>" }
+          "tag=$tag" >> $env:GITHUB_OUTPUT
+          "version=$($tag.Substring(1))" >> $env:GITHUB_OUTPUT
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.tag.outputs.tag }}
+
+      - name: Tag matches Cargo.toml version
+        shell: pwsh
+        run: |
+          $inPkg = $false; $v = $null
+          foreach ($line in Get-Content Cargo.toml) {
+            if ($line -match '^\s*\[') { $inPkg = ($line.Trim() -eq '[workspace.package]'); continue }
+            if ($inPkg -and $line -match '^\s*version\s*=\s*"([^"]+)"') { $v = $Matches[1]; break }
+          }
+          if ($v -ne '${{ steps.tag.outputs.version }}') { throw "Cargo.toml version $v != tag ${{ steps.tag.outputs.tag }}" }
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: craft-fonts
+        shell: pwsh
+        run: |
+          git clone --filter=blob:none https://github.com/storytold/craft-fonts "$env:RUNNER_TEMP\craft-fonts"
+          git -C "$env:RUNNER_TEMP\craft-fonts" checkout $env:CRAFT_FONTS_REF
+          "CRAFT_FONTS_DIR=$env:RUNNER_TEMP\craft-fonts" >> $env:GITHUB_ENV
+
+      - name: WiX
+        run: |
+          dotnet tool install --global wix --version 5.0.2
+          wix extension add -g WixToolset.UI.wixext/5.0.2 WixToolset.Util.wixext/5.0.2
+
+      - name: Build and package
+        shell: pwsh
+        env:
+          DIST: ${{ github.workspace }}\dist\release
+          # Optional Authenticode signing (sign.ps1): set these repository secrets to sign.
+          WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+        run: pwsh packaging/windows/package.ps1 -Arch x64
+
+      - name: SHA256SUMS.txt
+        shell: pwsh
+        working-directory: dist/release
+        run: |
+          Get-ChildItem -File -Filter 'tsmovie-*' | Sort-Object Name | ForEach-Object {
+            "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant())  $($_.Name)"
+          } | Set-Content -Encoding ascii SHA256SUMS.txt
+          Get-Content SHA256SUMS.txt
+
+      - name: Publish release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = '${{ steps.tag.outputs.tag }}'
+          $files = @(Get-ChildItem dist/release -File | Where-Object { $_.Name -like 'tsmovie-*' -or $_.Name -eq 'SHA256SUMS.txt' } | ForEach-Object FullName)
+          if ($files.Count -lt 2) { throw "nothing to publish in dist/release" }
+          $files | ForEach-Object { Write-Output "asset: $_" }
+          gh release view $tag --json tagName 2>$null | Out-Null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag @files --clobber
+          } else {
+            $create = @('release', 'create', $tag) + $files + @('--title', "TSMovie ${{ steps.tag.outputs.version }}", '--generate-notes', '--verify-tag')
+            if ($tag -match '-') { $create += '--prerelease' }
+            gh @create
+          }
+          if ($LASTEXITCODE -ne 0) { throw "gh release failed with exit code $LASTEXITCODE" }

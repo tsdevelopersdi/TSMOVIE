@@ -1,6 +1,6 @@
 # filmcraft-codecs
 
-The L2 container and codec hub connects media sources to FilmCraft's software and registered
+The L2 container and codec hub connects media sources to TSMovie's software and registered
 hardware decoders. It provides container openers, GOP-aware video seeking, packet audio decoding
 and standalone audio imports. See the crate-level API documentation in `src/lib.rs` and
 [`docs/architecture.md`](../../docs/architecture.md) for the source and decoder interfaces.
